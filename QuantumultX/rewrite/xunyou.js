@@ -1,7 +1,7 @@
 /***********************************
  [rewrite_local]
- https:\/\/dss-m\.xywlhlh\.com\/site-api\/mobile\/flow\/recharge\/\d+\/product url script-response-body https://raw.githubusercontent.com/Brucents/Proxy_Config/main/QuantumultX/rewrite/xunyou.js
- https:\/\/dss-m\.xywlhlh\.com\/site-api\/mobile\/member\/info url script-response-body https://raw.githubusercontent.com/Brucents/Proxy_Config/main/QuantumultX/rewrite/xunyou.js
+ https:\/\/dss-m\.xywlhlh\.com\/site-api\/mobile\/flow\/recharge\/\d+\/product url script-response-body https://raw.githubusercontent.com/Brucents/Rule_Config/master/QuantumultX/rewrite/xunyou.js
+ https:\/\/dss-m\.xywlhlh\.com\/site-api\/mobile\/member\/info url script-response-body https://raw.githubusercontent.com/Brucents/Rule_Config/master/QuantumultX/rewrite/xunyou.js
 
  [mitm]
  hostname=dss-m.xywlhlh.com
