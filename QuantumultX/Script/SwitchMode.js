@@ -19,7 +19,7 @@ setRunningMode("all_direct")
   })
   .then(() => {
     console.log("[INFO] 已切换到规则模式");
-    $notify("🔔 网络变化", "✅ 您已重新接入网络");
+    $notify("🔔 网络变化", "", "✅ 您已重新接入网络");
   })
   .finally(() => {
     $done();
