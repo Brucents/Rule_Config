@@ -1,6 +1,6 @@
 /***********************************
 [rewrite_local]
-^https?:\/\/gw2c-hw-open\.longfor\.com\/lmarketing-task-api-mvc-prod\/openapi\/task\/v1\/signature\/clock url script-request-header https://raw.githubusercontent.com/Brucents/Rule_Config/master/QuantumultX/Script/lhtj.js, timeout=60, tag=龙湖天街获取Cookie并同步青龙
+^https?:\/\/gw2c-hw-open\.longfor\.com\/lmarketing-task-api-mvc-prod\/openapi\/task\/v1\/signature\/clock url script-request-header https://raw.githubusercontent.com/Brucents/Rule_Config/master/QuantumultX/Script/lhtj.js
 
 [mitm]
 hostname = gw2c-hw-open.longfor.com
