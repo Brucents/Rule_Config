@@ -22,7 +22,7 @@ let QL = null;
 function parseUsers(raw) {
   if (!raw) return [];
   const users = JSON.parse(raw);
-  if (!Array.isArray(users)) throw new Error(`青龙变量 ${ENV_NAME} 的内容不是账号数组`);
+  if (!Array.isArray(users)) throw new Error(`${ENV_NAME} 内容不是账号数组`);
   return users;
 }
 
@@ -78,7 +78,11 @@ async function qlRequest(path, method, token, body) {
 
   const response = await $task.fetch(options);
   const status = Number(response.statusCode || response.status || 0);
-  if (status < 200 || status >= 300) throw new Error(`青龙 API 请求失败（HTTP ${status || "未知"}）`);
+  if (status < 200 || status >= 300) {
+    const endpoint = `${QL.baseUrl.replace(/\/+$/, "")}${path.split("?")[0]}`;
+    const hint = status === 404 ? "；检查面板根地址、反向代理前缀和 Open API 路径" : "";
+    throw new Error(`青龙接口 ${endpoint} 返回 HTTP ${status || "未知"}${hint}`);
+  }
 
   let result;
   try {
@@ -128,10 +132,15 @@ async function main() {
   }
 
   let account;
+  let localUsers;
   try {
     account = getAccount($request.headers);
+    localUsers = upsertAccount(parseUsers($prefs.valueForKey(ENV_NAME)), account);
+    if (!$prefs.setValueForKey(JSON.stringify(localUsers), ENV_NAME)) {
+      throw new Error("Cookie 本地保存失败，请检查 QuanX 存储空间");
+    }
   } catch (error) {
-    $notify("龙湖天街 Cookie", "采集失败", error.message || "请检查请求头");
+    $notify("龙湖天街 Cookie", "采集或本地保存失败", error.message || "请检查请求头和本地存储");
     $done({});
     return;
   }
@@ -139,22 +148,22 @@ async function main() {
   try {
     QL = loadQlConfig();
   } catch (error) {
-    $notify("龙湖天街 Cookie", "未上传，青龙配置无效", error.message || "请检查 lhtj_ql_config");
+    $notify("龙湖天街 Cookie", "本地已保存，青龙配置无效", error.message || "请检查 lhtj_ql_config");
     $done({});
     return;
   }
 
   if (!QL) {
-    $notify("龙湖天街 Cookie", "未上传", `请先设置本地偏好 ${QL_CONFIG_KEY}；Cookie 未保存`);
+    $notify("龙湖天街 Cookie", "本地保存成功", `已保存到本地变量 ${ENV_NAME}；请设置 ${QL_CONFIG_KEY} 后同步青龙`);
     $done({});
     return;
   }
 
   try {
     const count = await syncToQingLong(account);
-    $notify("龙湖天街 Cookie", "云端上传成功", `青龙变量 ${ENV_NAME} 已更新，共 ${count} 个账号；Cookie 未保存在本地`);
+    $notify("龙湖天街 Cookie", "本地和青龙同步成功", `本地变量 ${ENV_NAME} 已保存；青龙变量已更新，共 ${count} 个账号`);
   } catch (error) {
-    $notify("龙湖天街 Cookie", "云端上传失败", `${error.message || "请检查面板地址、应用凭据和 API 权限"}；Cookie 未保存在本地`);
+    $notify("龙湖天街 Cookie", "本地保存成功，青龙上传失败", `${error.message || "请检查面板地址、应用凭据和 API 权限"}`);
   }
   $done({});
 }
