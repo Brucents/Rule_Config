@@ -1,11 +1,13 @@
+/***********************************
+[rewrite_local]
+^https?:\/\/gw2c-hw-open\.longfor\.com\/lmarketing-task-api-mvc-prod\/openapi\/task\/v1\/signature\/clock url script-request-header https://raw.githubusercontent.com/Brucents/Rule_Config/master/QuantumultX/Script/lhtj.js, timeout=60, tag=龙湖天街获取Cookie并同步青龙
+
+[mitm]
+hostname = gw2c-hw-open.longfor.com
+***********************************/
+
 /*
  * Quantumult X 龙湖天街 Cookie 采集并同步到青龙
- *
- * [rewrite_local]
- * ^https?:\/\/gw2c-hw-open\.longfor\.com\/lmarketing-task-api-mvc-prod\/openapi\/task\/v1\/signature\/clock url script-request-header https://raw.githubusercontent.com/Brucents/Rule_Config/master/QuantumultX/Script/lhtj.js, timeout=60, tag=龙湖天街获取Cookie并同步青龙
- *
- * [mitm]
- * hostname = gw2c-hw-open.longfor.com
  *
  * Cookie 仅在本次运行内存中处理并直接上传，不写入 QuanX 本地存储。
  * 青龙连接配置保存在 QuanX 本地偏好键 lhtj_ql_config，不写入脚本文件：
