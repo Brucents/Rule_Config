@@ -99,7 +99,7 @@ async function qlRequest(path, method, token, body) {
 async function syncToQingLong(account) {
   const authUrl = "/open/auth/token?client_id=" + encodeURIComponent(QL.clientId) +
     "&client_secret=" + encodeURIComponent(QL.clientSecret);
-  const auth = await qlRequest(authUrl, "POST");
+  const auth = await qlRequest(authUrl, "GET");
   const accessToken = auth.data && auth.data.token;
   if (!accessToken) throw new Error("青龙没有返回 API 访问令牌，请检查应用凭据和面板地址");
 
@@ -118,9 +118,9 @@ async function syncToQingLong(account) {
   if (existing) {
     if (existing.id === undefined) throw new Error("青龙环境变量响应中没有 id，无法安全更新");
     env.id = existing.id;
-    await qlRequest("/open/envs", "PUT", accessToken, [env]);
+    await qlRequest("/open/envs", "PUT", accessToken, env);
   } else {
-    await qlRequest("/open/envs", "POST", accessToken, env);
+    await qlRequest("/open/envs", "POST", accessToken, [env]);
   }
   return users.length;
 }
