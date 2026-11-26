@@ -1,0 +1,71 @@
+{
+  // 开启内部 API 服务，用于管理和查询 Xray 状态
+  "api": {
+    "services": [
+      "HandlerService", // 用于动态修改入站/出站配置
+      "LoggerService",  // 用于动态修改日志级别
+      "StatsService"    // 用于获取流量统计信息
+    ],
+    "tag": "api"
+  },
+  "inbounds": [
+    {
+      "listen": "127.0.0.1",
+      "port": 62789,
+      "protocol": "dokodemo-door", // 任意门协议，将本地流量转发到该端口
+      "settings": {
+        "address": "127.0.0.1"
+      },
+      "tag": "api" // 定义此入站的标签，供路由规则调用
+    }
+  ],
+  
+  // 出站配置：定义流量如何离开 Xray
+  "outbounds": [
+    {
+      "protocol": "freedom", // 自由模式，即直连（不走代理）
+      "settings": {}
+    },
+    {
+      "protocol": "blackhole", // 黑洞模式，即直接丢弃流量（拦截）
+      "settings": {},
+      "tag": "blocked" // 定义此出站的标签
+    }
+  ],
+  
+  // 策略配置：定义流量统计和连接行为
+  "policy": {
+    "system": {
+      "statsInboundDownlink": true, // 开启入站流量的下行统计
+      "statsInboundUplink": true    // 开启入站流量的上行统计
+    }
+  },
+  
+  // 路由配置：这是核心，决定流量走哪条出站
+  "routing": {
+    "rules": [
+      // 规则 1：将匹配 api 标签的入站流量路由到 api 出站
+      {
+        "inboundTag": ["api"],
+        "outboundTag": "api",
+        "type": "field"
+      },
+      // 规则 2：拦截所有私有 IP 流量（局域网/内网，包括 127.0.0.1, 192.168.x.x 等）
+      // 注意：这会导致无法连接局域网设备
+      // {
+      //   "ip": ["geoip:private"],
+      //   "outboundTag": "blocked",
+      //   "type": "field"
+      // },
+      // 规则 3：拦截所有 BT 下载流量，防止被某些网络环境下的监管手段发现
+      {
+        "outboundTag": "blocked",
+        "protocol": ["bittorrent"],
+        "type": "field"
+      }
+    ]
+  },
+  
+  // 流量统计配置
+  "stats": {}
+}
